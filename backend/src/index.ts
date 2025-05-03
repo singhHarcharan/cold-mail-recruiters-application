@@ -3,10 +3,10 @@ import { MailSender } from './mailSender';
 import { Users, EmailContent } from './types';
 
 function getBodydata(): Users {
-  const names = ['Gurcharan Singh', 'Harcharanpreet Singh'];
-  const emails = ['gurcharansinghkhalsa262@gmail.com', 'harcharansingh198400@gmail.com'];
-  const companies = ['Accenture', 'Amdocs'];
-  const jobProfiles = ['HR', 'Software Engineer'];
+  const names = ['Armaan'];
+  const emails = ['armaanaurapvt@gmail.com'];
+  const companies = ['Microsoft'];
+  const jobProfiles = ['HR'];
   return { names, emails, companies, jobProfiles };
 }
 
@@ -15,7 +15,7 @@ async function main() {
     const mailSender = new MailSender();
     const recruiters: Users = getBodydata();
     const emailContent: EmailContent = {
-      subject: 'Job Application from Harcharan Singh',
+      subject: 'Job Application for Software Engineer Role',
       text: 'Dear Recruiter,\n\nI am excited to apply for opportunities at your company. Please find my resume attached.\n\nBest regards,\nHarcharan Singh',
       html: '<p>Dear Recruiter,</p><p>I am excited to apply for opportunities at your company. Please find my resume attached.</p><p>Best regards,<br>Harcharan Singh</p>'
     };

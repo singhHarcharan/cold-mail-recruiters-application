@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { EmailContent, Users } from './types';
+import { EmailContent, Users} from './types';
 
 // Custom error for mail sending issues
 class MailSenderError extends Error {
@@ -54,6 +54,7 @@ export class MailSender {
 
     const senderName = process.env.SENDER_NAME!;
     const senderEmail = process.env.GMAIL_USER!;
+    const resumeFilePath = process.env.RESUME_FILE_PATH
 
     // Loop through recipients
     for (let i = 0; i < recipientEmails.emails.length; i++) {
@@ -71,7 +72,13 @@ export class MailSender {
         to: receiver,
         subject: emailContent.subject,
         text: personalizedText,
-        html: personalizedHtml
+        html: personalizedHtml,
+        attachments :[ 
+          {
+            fileName : senderName + "_Resume",
+            path : resumeFilePath,
+          }
+        ],
       };
 
       try {
