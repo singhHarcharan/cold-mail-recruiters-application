@@ -3,4 +3,4 @@ function sum(a: number, b: number): number {
 }
 
 let result: number = sum(10, 20);
-console.log("Sum of two numbers is ", result);
+console.log("Sum of two numbers is ", result , "Hello harcharan");
