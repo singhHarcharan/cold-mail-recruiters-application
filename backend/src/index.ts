@@ -21,7 +21,7 @@ async function main() {
     };
 
     await mailSender.sendEmails(recruiters, emailContent);
-    console.log('Emails sent successfully from index.ts');
+    console.log('Emails sent successfully from index.ts');  
   } catch (error) {
     console.error('Failed to send emails:', error);
   }
