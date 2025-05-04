@@ -1,10 +1,10 @@
-import './App.css'
+import Dashboard from "./components/Dashboard"
 
 function App() {
   return (
-    <>
-      Cold Mail Recruiters
-    </>
+    <div className="bg-gray-100 min-h-screen flex justify-items-end">
+      <Dashboard />
+    </div>
   )
 }
 
