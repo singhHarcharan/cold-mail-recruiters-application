@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node src/index.ts",
-    "send-email": "ts-node src/mailSender.ts"
+    "send-email": "ts-node src/mailSender.ts",
+    "dev": "nodemon server"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +17,7 @@
     "@types/express": "^5.0.1",
     "@types/nodemailer": "^6.4.17",
     "@types/react-router-dom": "^5.3.3",
+    "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },

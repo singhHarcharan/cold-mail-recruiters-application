@@ -49,6 +49,7 @@ class MailSender {
     // Send emails to multiple recruiters
     sendEmails(recipientEmails, emailContent) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log("Sending emails to recruiters...");
             // Validate inputs
             if (!recipientEmails || recipientEmails.emails.length === 0) {
                 throw new MailSenderError('No recipient emails provided');

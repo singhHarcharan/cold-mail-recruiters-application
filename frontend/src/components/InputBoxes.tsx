@@ -5,7 +5,7 @@ function InputBoxes() {
     async function test() {
         console.log("Entered into Testing API function of frontend");
         try {
-            const response = await axios.get('test');
+            const response = await axios.get('http://localhost:8000/sendEmail');
             console.log("Response from backend is ", response.data);
             console.log("Response Status from backend is ", response.status);
         } catch (error) {

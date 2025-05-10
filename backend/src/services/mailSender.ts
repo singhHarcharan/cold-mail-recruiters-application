@@ -44,6 +44,9 @@ export class MailSender {
 
   // Send emails to multiple recruiters
   async sendEmails(recipientEmails: Users, emailContent: EmailContent): Promise<void> {
+    
+    console.log("Sending emails to recruiters...");
+
     // Validate inputs
     if (!recipientEmails || recipientEmails.emails.length === 0) {
       throw new MailSenderError('No recipient emails provided');
@@ -54,7 +57,7 @@ export class MailSender {
 
     const senderName = process.env.SENDER_NAME!;
     const senderEmail = process.env.GMAIL_USER!;
-    const resumeFilePath = process.env.RESUME_FILE_PATH
+    const resumeFilePath = process.env.RESUME_FILE_PATH;
 
     // Loop through recipients
     for (let i = 0; i < recipientEmails.emails.length; i++) {
