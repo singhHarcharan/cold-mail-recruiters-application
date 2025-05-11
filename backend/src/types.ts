@@ -10,3 +10,12 @@ export interface Users {
   companies: string[];
   jobProfiles: string[];
 }
+
+export interface Recipient {
+  id:number;
+  name: string;
+  email: string;
+  company: string;
+  jobProfile: string;
+  toSend: boolean;
+}
