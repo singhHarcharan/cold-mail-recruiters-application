@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.helper = void 0;
 const mailSender_1 = require("../services/mailSender");
+const emailContent_1 = require("../context/emailContent");
 class Helper {
     getBodydata() {
         const names = ['Armaan', 'Harcharanpreet Singh', 'Gurcharan Singh'];
@@ -22,20 +23,15 @@ class Helper {
     main(fullName, email, companyName) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const mailSender = new mailSender_1.MailSender();
                 const recruiters = this.getBodydata();
-                const emailContent = {
-                    subject: 'Job Application for Software Engineer Role',
-                    text: 'Dear Recruiter,\n\nI am excited to apply for opportunities at your company. Please find my resume attached.\n\nBest regards,\nHarcharan Singh',
-                    html: '<p>Dear Recruiter,</p><p>I am excited to apply for opportunities at your company. Please find my resume attached.</p><p>Best regards,<br>Harcharan Singh</p>'
-                };
+                const contentToSend = emailContent_1.emailContent.getEmailContent();
                 // If we got the payload from frontend, send email to that person
                 if (fullName && email && companyName) {
-                    yield mailSender.sendOneEmail(email, fullName, companyName, emailContent);
+                    yield mailSender_1.mailSender.sendOneEmail(email, fullName, companyName, contentToSend);
                 }
                 // else send email to all recruiters
                 else {
-                    yield mailSender.sendEmails(recruiters, emailContent);
+                    yield mailSender_1.mailSender.sendEmails(recruiters, contentToSend);
                 }
             }
             catch (error) {

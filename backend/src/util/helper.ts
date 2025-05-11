@@ -1,5 +1,6 @@
 import { Users, EmailContent } from "../types";
-import { MailSender } from "../services/mailSender";
+import { mailSender } from "../services/mailSender";
+import { emailContent } from "../context/emailContent";
 
 class Helper {
 
@@ -13,21 +14,16 @@ class Helper {
 
     async main(fullName: string, email: string, companyName: string) {
         try {
-            const mailSender = new MailSender();
             const recruiters: Users = this.getBodydata();
-            const emailContent: EmailContent = {
-                subject: 'Job Application for Software Engineer Role',
-                text: 'Dear Recruiter,\n\nI am excited to apply for opportunities at your company. Please find my resume attached.\n\nBest regards,\nHarcharan Singh',
-                html: '<p>Dear Recruiter,</p><p>I am excited to apply for opportunities at your company. Please find my resume attached.</p><p>Best regards,<br>Harcharan Singh</p>'
-            };
+            const contentToSend : EmailContent = emailContent.getEmailContent();
 
             // If we got the payload from frontend, send email to that person
             if (fullName && email && companyName) {
-                await mailSender.sendOneEmail(email, fullName, companyName, emailContent);
+                await mailSender.sendOneEmail(email, fullName, companyName, contentToSend);
             } 
             // else send email to all recruiters
             else {
-                await mailSender.sendEmails(recruiters, emailContent);
+                await mailSender.sendEmails(recruiters, contentToSend);
             }
         } catch (error) {
             console.error('Failed to send emails:', error);

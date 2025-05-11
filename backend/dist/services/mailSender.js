@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MailSender = void 0;
+exports.mailSender = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 // Custom error for mail sending issues
 class MailSenderError extends Error {
@@ -133,4 +133,4 @@ class MailSender {
         });
     }
 }
-exports.MailSender = MailSender;
+exports.mailSender = new MailSender();

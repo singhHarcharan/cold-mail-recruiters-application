@@ -9,7 +9,7 @@ class MailSenderError extends Error {
   }
 }
 
-export class MailSender {
+class MailSender {
   private transporter: nodemailer.Transporter;
 
   constructor() {
@@ -131,3 +131,4 @@ export class MailSender {
     }
   }
 }
+export const mailSender = new MailSender();
