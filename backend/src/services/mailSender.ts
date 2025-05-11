@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { EmailContent, Users} from '../types';
+import { EmailContent, Users } from '../types';
 
 // Custom error for mail sending issues
 class MailSenderError extends Error {
@@ -42,9 +42,47 @@ export class MailSender {
     return { personalizedText, personalizedHtml };
   }
 
+  async sendOneEmail(email: string, fullName: string, companyName: string, emailContent: EmailContent): Promise<void> {
+    console.log("Sending email to recruiter...");
+    // Validate inputs
+    if (!email || !fullName || !companyName) {
+      throw new MailSenderError('Email, full name, and company name are required');
+    }
+    if (!emailContent.text && !emailContent.html) {
+      throw new MailSenderError('At least one of text or html must be provided');
+    }
+    const senderName = process.env.SENDER_NAME!;
+    const senderEmail = process.env.GMAIL_USER!;
+    const resumeFilePath = process.env.RESUME_FILE_PATH;
+    const receiverName = fullName;
+    const { personalizedText, personalizedHtml } = this.getPersonalizedData(emailContent, receiverName, companyName, senderName);
+    // If No message is there, no need to send mail.
+    if (personalizedText.length === 0 && personalizedHtml.length === 0) return;
+    const mailOptions = {
+      from: `"${senderName}" <${senderEmail}>`,
+      to: email,
+      subject: emailContent.subject,
+      text: personalizedText,
+      html: personalizedHtml,
+      attachments: [
+        {
+          fileName: senderName + "_Resume",
+          path: resumeFilePath,
+        }
+      ],
+    };
+
+    try {
+      const info = await this.transporter.sendMail(mailOptions);
+      console.log(`Email sent to ${email}: ${info.messageId}`);
+    } catch (error) {
+      console.error(`Error sending email to ${email}:`, error);
+    }
+  }
+
   // Send emails to multiple recruiters
   async sendEmails(recipientEmails: Users, emailContent: EmailContent): Promise<void> {
-    
+
     console.log("Sending emails to recruiters...");
 
     // Validate inputs
@@ -68,7 +106,7 @@ export class MailSender {
       const { personalizedText, personalizedHtml } = this.getPersonalizedData(emailContent, receiverName, companyName, senderName);
 
       // If No message is there, no need to send mail.
-      if(personalizedText.length === 0 && personalizedHtml.length === 0) return ;
+      if (personalizedText.length === 0 && personalizedHtml.length === 0) return;
 
       const mailOptions = {
         from: `"${senderName}" <${senderEmail}>`,
@@ -76,10 +114,10 @@ export class MailSender {
         subject: emailContent.subject,
         text: personalizedText,
         html: personalizedHtml,
-        attachments :[ 
+        attachments: [
           {
-            fileName : senderName + "_Resume",
-            path : resumeFilePath,
+            fileName: senderName + "_Resume",
+            path: resumeFilePath,
           }
         ],
       };

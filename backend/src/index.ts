@@ -10,8 +10,9 @@ app.use(cors({
 }));
 app.use(express.json());
 
-app.get('/sendEmail', async (req: Request, res: Response) => {
-    await helper.main();
+app.post('/sendEmail', async (req: Request, res: Response) => {
+    const { fullName, email, companyName } = req.body;
+    await helper.main(fullName, email, companyName);
 });
 
 app.listen(8000, () => {

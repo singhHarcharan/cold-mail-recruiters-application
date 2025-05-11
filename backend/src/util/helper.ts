@@ -11,7 +11,7 @@ class Helper {
         return { names, emails, companies, jobProfiles };
     }
 
-    async main() {
+    async main(fullName: string, email: string, companyName: string) {
         try {
             const mailSender = new MailSender();
             const recruiters: Users = this.getBodydata();
@@ -21,8 +21,14 @@ class Helper {
                 html: '<p>Dear Recruiter,</p><p>I am excited to apply for opportunities at your company. Please find my resume attached.</p><p>Best regards,<br>Harcharan Singh</p>'
             };
 
-            await mailSender.sendEmails(recruiters, emailContent);
-            console.log('Emails sent successfully from index.ts');
+            // If we got the payload from frontend, send email to that person
+            if (fullName && email && companyName) {
+                await mailSender.sendOneEmail(email, fullName, companyName, emailContent);
+            } 
+            // else send email to all recruiters
+            else {
+                await mailSender.sendEmails(recruiters, emailContent);
+            }
         } catch (error) {
             console.error('Failed to send emails:', error);
         }

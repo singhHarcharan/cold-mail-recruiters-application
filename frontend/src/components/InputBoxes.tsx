@@ -1,13 +1,26 @@
 import axios from "axios";
+import { useState } from "react";
 
 function InputBoxes() {
+    const [email, setEmail] = useState("");
+    const [fullName, setFullName] = useState("");
+    const [companyName, setCompanyName] = useState("");
 
-    async function test() {
+    async function sendEmail() {
         console.log("Entered into Testing API function of frontend");
+        const payload: { fullName: string, email: string, companyName: string} = {
+            email: email,
+            fullName: fullName,
+            companyName: companyName,   
+        };
+        console.log("Payload before sending to backend is ", payload);
         try {
-            const response = await axios.get('http://localhost:8000/sendEmail');
-            console.log("Response from backend is ", response.data);
-            console.log("Response Status from backend is ", response.status);
+            const response = await fetch('http://localhost:8000/sendEmail', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+            console.log("Response from backend is ", response);
         } catch (error) {
             console.error('Error:', error);
         }
@@ -57,6 +70,7 @@ function InputBoxes() {
                     outline: 'none',
                     transition: 'border-color 0.2s ease-in-out', // Smooth transition for hover/focus
                 }}
+                onChange={(e => setFullName(e.target.value))} // Update state on change
                 onMouseOver={(e) => (e.currentTarget.style.borderColor = '#3b82f6')} // Blue border on hover
                 onMouseOut={(e) => (e.currentTarget.style.borderColor = '#d1d5db')} // Reset on mouse out
                 onFocus={(e) => (e.currentTarget.style.borderColor = '#3b82f6')} // Blue border on focus
@@ -88,6 +102,7 @@ function InputBoxes() {
                     outline: 'none',
                     transition: 'border-color 0.2s ease-in-out',
                 }}
+                onChange={(e => setEmail(e.target.value))} // Update state on change
                 onMouseOver={(e) => (e.currentTarget.style.borderColor = '#3b82f6')}
                 onMouseOut={(e) => (e.currentTarget.style.borderColor = '#d1d5db')}
                 onFocus={(e) => (e.currentTarget.style.borderColor = '#3b82f6')}
@@ -119,6 +134,7 @@ function InputBoxes() {
                     outline: 'none',
                     transition: 'border-color 0.2s ease-in-out',
                 }}
+                onChange={(e => setCompanyName(e.target.value))} // Update state on change
                 onMouseOver={(e) => (e.currentTarget.style.borderColor = '#3b82f6')}
                 onMouseOut={(e) => (e.currentTarget.style.borderColor = '#d1d5db')}
                 onFocus={(e) => (e.currentTarget.style.borderColor = '#3b82f6')}
@@ -139,7 +155,7 @@ function InputBoxes() {
                 }}
                 onFocus={(e) => (e.currentTarget.style.backgroundColor = '#2563eb')} // Darker blue on hover
                 onBlur={(e) => (e.currentTarget.style.backgroundColor = '#3b82f6')} // Reset on mouse out
-                onClick={test}
+                onClick={sendEmail}
             >
                 Submit
             </button>

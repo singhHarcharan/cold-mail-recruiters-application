@@ -18,8 +18,9 @@ app.use(cors({
     origin: '*'
 }));
 app.use(express.json());
-app.get('/sendEmail', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield helper_1.helper.main();
+app.post('/sendEmail', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { fullName, email, companyName } = req.body;
+    yield helper_1.helper.main(fullName, email, companyName);
 }));
 app.listen(8000, () => {
     console.log(`Backend server running on http://localhost:8000`);

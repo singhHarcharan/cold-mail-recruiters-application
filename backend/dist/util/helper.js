@@ -19,7 +19,7 @@ class Helper {
         const jobProfiles = ['HR', 'Engineer', 'Analyst'];
         return { names, emails, companies, jobProfiles };
     }
-    main() {
+    main(fullName, email, companyName) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const mailSender = new mailSender_1.MailSender();
@@ -29,8 +29,14 @@ class Helper {
                     text: 'Dear Recruiter,\n\nI am excited to apply for opportunities at your company. Please find my resume attached.\n\nBest regards,\nHarcharan Singh',
                     html: '<p>Dear Recruiter,</p><p>I am excited to apply for opportunities at your company. Please find my resume attached.</p><p>Best regards,<br>Harcharan Singh</p>'
                 };
-                yield mailSender.sendEmails(recruiters, emailContent);
-                console.log('Emails sent successfully from index.ts');
+                // If we got the payload from frontend, send email to that person
+                if (fullName && email && companyName) {
+                    yield mailSender.sendOneEmail(email, fullName, companyName, emailContent);
+                }
+                // else send email to all recruiters
+                else {
+                    yield mailSender.sendEmails(recruiters, emailContent);
+                }
             }
             catch (error) {
                 console.error('Failed to send emails:', error);
