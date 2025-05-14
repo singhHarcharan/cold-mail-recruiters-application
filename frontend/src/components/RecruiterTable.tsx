@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bookmark, Mail } from 'lucide-react';
+import { Mail } from 'lucide-react';
 import { useSavedRecruiters } from '../context/SavedRecruitersContext';
 import { useSelectedRecruiters } from '../context/SelectedRecruitersContext';
 import EmailButton from './EmailButton';
