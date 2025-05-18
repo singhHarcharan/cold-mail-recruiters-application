@@ -1,5 +1,5 @@
 import EmailsPreview from "./EmailsPreview";
-import InputBoxes from "./InputBoxes";
+import InputBoxes from "../components/InputBoxes";
 
 export default function Dashboard() {
     return (
