@@ -1,20 +1,22 @@
 import { defineConfig } from 'vite';
-import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
+import tailwindcss from 'tailwindcss';
+import autoprefixer from 'autoprefixer';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [tailwindcss(), react()],
-  server: {
-    // proxy: {
-    //   '/api': {
-    //     target: 'http://localhost:5000',
-    //     changeOrigin: true,
-    //     rewrite: (path) => path.replace(/^\/api/, '/api'),
-    //   },
-    // },
+  plugins: [react()],
+  css: {
+    postcss: {
+      plugins: [
+        tailwindcss,
+        autoprefixer,
+      ],
+    },
   },
-  optimizeDeps: {
-    exclude: ['lucide-react'],
-  },
+  resolve: {
+    alias: {
+      '@': '/src'
+    }
+  }
 });
