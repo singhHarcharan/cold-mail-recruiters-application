@@ -1,10 +1,11 @@
-import React from 'react';
+//import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { SavedRecruitersProvider } from './context/SavedRecruitersContext';
 import { SelectedRecruitersProvider } from './context/SelectedRecruitersContext';
 import Header from './components/Header';
 import SearchPage from './pages/SearchPage';
 import SavedPage from './pages/SavedPage';
+import Footer from './components/Footer';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <SelectedRecruitersProvider>
           <div className="min-h-screen bg-gray-50 flex flex-col">
             <Header />
+            
             <main className="flex-grow">
               <Routes>
                 <Route path="/" element={<SearchPage />} />
@@ -20,6 +22,7 @@ function App() {
               </Routes>
             </main>
           </div>
+          <Footer />
         </SelectedRecruitersProvider>
       </SavedRecruitersProvider>
     </Router>
