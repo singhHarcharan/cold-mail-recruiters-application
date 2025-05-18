@@ -73,6 +73,9 @@ const SearchPage: React.FC = () => {
             <RecruiterTable recruiters={currentRecruiters} />
             
             <div className="p-4 border-t border-gray-200">
+              {/* This is the pagination component */}
+              {/* which is used to navigate through the pages */}
+              {/* and also to change the number of recruiters per page */}
               <Pagination 
                 itemsPerPage={recruitersPerPage}
                 totalItems={filteredRecruiters.length}
