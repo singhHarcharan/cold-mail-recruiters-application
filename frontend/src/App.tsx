@@ -1,3 +1,4 @@
+import Dashboard from "./InputBoxes/Dashboard"
 //import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { SavedRecruitersProvider } from './context/SavedRecruitersContext';
@@ -9,6 +10,9 @@ import Footer from './components/Footer';
 
 function App() {
   return (
+//     <div className="bg-gray-100 min-h-screen flex justify-items-end">
+//       <Dashboard />
+//     </div>
     <Router>
       <SavedRecruitersProvider>
         <SelectedRecruitersProvider>

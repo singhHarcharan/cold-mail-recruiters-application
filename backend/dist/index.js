@@ -1,6 +1,27 @@
 "use strict";
-function sum(a, b) {
-    return a + b;
-}
-let result = sum(10, 20);
-console.log("Sum of two numbers is ", result);
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+require("dotenv/config");
+const express = require('express');
+const cors = require('cors');
+const helper_1 = require("./util/helper");
+const app = express();
+app.use(cors({
+    origin: '*'
+}));
+app.use(express.json());
+app.post('/sendEmail', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { fullName, email, companyName } = req.body;
+    yield helper_1.helper.main(fullName, email, companyName);
+}));
+app.listen(8000, () => {
+    console.log(`Backend server running on http://localhost:8000`);
+});
