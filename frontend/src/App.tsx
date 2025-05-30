@@ -21,7 +21,7 @@ function App() {
             <Header />
             <main className="flex-grow">
               <Routes>
-                <Route path="/searchpage" element={<SearchPage />} />
+                <Route path="/" element={<SearchPage />} />
                 <Route path="/saved" element={<SavedPage />} />
               </Routes>
             </main>

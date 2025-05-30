@@ -2,9 +2,10 @@ import { useState } from "react";
 
 interface InputBoxesProps {
   onClose: () => void;
+  setIsModalOpen: (isOpen: boolean) => void;
 }
 
-export const InputBoxes: React.FC<InputBoxesProps> = ({ onClose }) => {
+export const InputBoxes: React.FC<InputBoxesProps> = ({ onClose, setIsModalOpen }) => {
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [companyName, setCompanyName] = useState("");
@@ -26,6 +27,9 @@ export const InputBoxes: React.FC<InputBoxesProps> = ({ onClose }) => {
       console.log("Response from backend is ", response);
     } catch (error) {
       console.error('Error:', error);
+    }
+    finally {
+        setIsModalOpen(false);
     }
   }
 
