@@ -23,7 +23,7 @@ const Header: React.FC = () => {
   return (
     <>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <InputBoxes onClose={() => setIsModalOpen(false)} setIsModalOpen={setIsModalOpen} />
+        <InputBoxes onClose={() => setIsModalOpen(false)} />
       </Modal>
       <Modal isOpen={openTemplateModal} onClose={handleEmailTemplateClose}>
         <EmailTemplate 

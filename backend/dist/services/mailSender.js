@@ -52,9 +52,11 @@ class MailSender {
             // Validate inputs
             if (!email || !fullName || !companyName) {
                 throw new MailSenderError('Email, full name, and company name are required');
+                return { success: false, message: 'Email, full name, and company name are required' };
             }
             if (!emailContent.text && !emailContent.html) {
                 throw new MailSenderError('At least one of text or html must be provided');
+                return { success: false, message: 'At least one of text or html must be provided' };
             }
             const senderName = process.env.SENDER_NAME;
             const senderEmail = process.env.GMAIL_USER;
@@ -63,7 +65,7 @@ class MailSender {
             const { personalizedText, personalizedHtml } = this.getPersonalizedData(emailContent, receiverName, companyName, senderName);
             // If No message is there, no need to send mail.
             if (personalizedText.length === 0 && personalizedHtml.length === 0)
-                return;
+                return { success: false, message: 'No message to send' };
             const mailOptions = {
                 from: `"${senderName}" <${senderEmail}>`,
                 to: email,
@@ -80,9 +82,11 @@ class MailSender {
             try {
                 const info = yield this.transporter.sendMail(mailOptions);
                 console.log(`Email sent to ${email}: ${info.messageId}`);
+                return { success: true, message: 'Email sent successfully' };
             }
             catch (error) {
                 console.error(`Error sending email to ${email}:`, error);
+                return { success: false, message: 'Failed to send email' };
             }
         });
     }
@@ -93,9 +97,11 @@ class MailSender {
             // Validate inputs
             if (!recipientEmails || recipientEmails.emails.length === 0) {
                 throw new MailSenderError('No recipient emails provided');
+                return { success: false, message: 'No recipient emails provided' };
             }
             if (!emailContent.text && !emailContent.html) {
                 throw new MailSenderError('At least one of text or html must be provided');
+                return { success: false, message: 'At least one of text or html must be provided' };
             }
             const senderName = process.env.SENDER_NAME;
             const senderEmail = process.env.GMAIL_USER;
@@ -108,7 +114,7 @@ class MailSender {
                 const { personalizedText, personalizedHtml } = this.getPersonalizedData(emailContent, receiverName, companyName, senderName);
                 // If No message is there, no need to send mail.
                 if (personalizedText.length === 0 && personalizedHtml.length === 0)
-                    return;
+                    return { success: false, message: 'No message to send' };
                 const mailOptions = {
                     from: `"${senderName}" <${senderEmail}>`,
                     to: receiver,
@@ -124,12 +130,16 @@ class MailSender {
                 };
                 try {
                     const info = yield this.transporter.sendMail(mailOptions);
+                    console.log("Response after sending email  ", info);
                     console.log(`Email sent to ${receiver}: ${info.messageId}`);
+                    return { success: true, message: 'Email sent successfully' };
                 }
                 catch (error) {
                     console.error(`Error sending email to ${receiver}:`, error);
+                    return { success: false, message: 'Failed to send email' };
                 }
             }
+            return { success: true, message: 'Email sent successfully' };
         });
     }
 }

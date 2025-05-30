@@ -42,14 +42,16 @@ class MailSender {
     return { personalizedText, personalizedHtml };
   }
 
-  async sendOneEmail(email: string, fullName: string, companyName: string, emailContent: EmailContent): Promise<void> {
+  async sendOneEmail(email: string, fullName: string, companyName: string, emailContent: EmailContent): Promise<{success: boolean, message: string}> {
     console.log("Sending email to recruiter...");
     // Validate inputs
     if (!email || !fullName || !companyName) {
       throw new MailSenderError('Email, full name, and company name are required');
+      return {success: false, message: 'Email, full name, and company name are required'};
     }
     if (!emailContent.text && !emailContent.html) {
       throw new MailSenderError('At least one of text or html must be provided');
+      return {success: false, message: 'At least one of text or html must be provided'};
     }
     const senderName = process.env.SENDER_NAME!;
     const senderEmail = process.env.GMAIL_USER!;
@@ -57,7 +59,7 @@ class MailSender {
     const receiverName = fullName;
     const { personalizedText, personalizedHtml } = this.getPersonalizedData(emailContent, receiverName, companyName, senderName);
     // If No message is there, no need to send mail.
-    if (personalizedText.length === 0 && personalizedHtml.length === 0) return;
+    if (personalizedText.length === 0 && personalizedHtml.length === 0) return {success: false, message: 'No message to send'};
     const mailOptions = {
       from: `"${senderName}" <${senderEmail}>`,
       to: email,
@@ -75,22 +77,26 @@ class MailSender {
     try {
       const info = await this.transporter.sendMail(mailOptions);
       console.log(`Email sent to ${email}: ${info.messageId}`);
+      return {success: true, message: 'Email sent successfully'};
     } catch (error) {
       console.error(`Error sending email to ${email}:`, error);
+      return {success: false, message: 'Failed to send email'};
     }
   }
 
   // Send emails to multiple recruiters
-  async sendEmails(recipientEmails: Users, emailContent: EmailContent): Promise<void> {
+  async sendEmails(recipientEmails: Users, emailContent: EmailContent): Promise<{success: boolean, message: string}> {
 
     console.log("Sending emails to recruiters...");
 
     // Validate inputs
     if (!recipientEmails || recipientEmails.emails.length === 0) {
       throw new MailSenderError('No recipient emails provided');
+      return {success: false, message: 'No recipient emails provided'};
     }
     if (!emailContent.text && !emailContent.html) {
       throw new MailSenderError('At least one of text or html must be provided');
+      return {success: false, message: 'At least one of text or html must be provided'};
     }
 
     const senderName = process.env.SENDER_NAME!;
@@ -106,7 +112,7 @@ class MailSender {
       const { personalizedText, personalizedHtml } = this.getPersonalizedData(emailContent, receiverName, companyName, senderName);
 
       // If No message is there, no need to send mail.
-      if (personalizedText.length === 0 && personalizedHtml.length === 0) return;
+      if (personalizedText.length === 0 && personalizedHtml.length === 0) return {success: false, message: 'No message to send'};
 
       const mailOptions = {
         from: `"${senderName}" <${senderEmail}>`,
@@ -124,11 +130,15 @@ class MailSender {
 
       try {
         const info = await this.transporter.sendMail(mailOptions);
+        console.log("Response after sending email  ", info);
         console.log(`Email sent to ${receiver}: ${info.messageId}`);
+        return {success: true, message: 'Email sent successfully'};
       } catch (error) {
         console.error(`Error sending email to ${receiver}:`, error);
+        return {success: false, message: 'Failed to send email'};
       }
     }
+    return {success: true, message: 'Email sent successfully'};
   }
 }
 export const mailSender = new MailSender();

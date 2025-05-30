@@ -27,15 +27,20 @@ class Helper {
                 const contentToSend = emailContent_1.emailContent.getEmailContent();
                 // If we got the payload from frontend, send email to that person
                 if (fullName && email && companyName) {
-                    yield mailSender_1.mailSender.sendOneEmail(email, fullName, companyName, contentToSend);
+                    const response = yield mailSender_1.mailSender.sendOneEmail(email, fullName, companyName, contentToSend);
+                    return response;
                 }
                 // else send email to all recruiters
                 else {
-                    yield mailSender_1.mailSender.sendEmails(recruiters, contentToSend);
+                    // const response = await mailSender.sendEmails(recruiters, contentToSend);
+                    // return response;
+                    throw new Error('No payload received');
+                    return { success: false, message: 'No payload received' };
                 }
             }
             catch (error) {
                 console.error('Failed to send emails:', error);
+                return { success: false, message: 'Failed to send emails' };
             }
         });
     }

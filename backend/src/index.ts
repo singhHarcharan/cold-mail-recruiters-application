@@ -12,7 +12,9 @@ app.use(express.json());
 
 app.post('/sendEmail', async (req: Request, res: Response) => {
     const { fullName, email, companyName } = req.body;
-    const response = await helper.main(fullName, email, companyName);
+    const response: {success: boolean, message: string} = await helper.main(fullName, email, companyName);
+    console.log("response before sending to frontend is", response, "---");
+    return res.send(response);
 });
 
 app.listen(8000, () => {

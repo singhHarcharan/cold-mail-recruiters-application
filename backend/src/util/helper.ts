@@ -19,14 +19,20 @@ class Helper {
 
             // If we got the payload from frontend, send email to that person
             if (fullName && email && companyName) {
-                await mailSender.sendOneEmail(email, fullName, companyName, contentToSend);
+                const response = await mailSender.sendOneEmail(email, fullName, companyName, contentToSend);
+                return response;
             } 
             // else send email to all recruiters
             else {
-                await mailSender.sendEmails(recruiters, contentToSend);
+                // const response = await mailSender.sendEmails(recruiters, contentToSend);
+                // return response;
+
+                throw new Error('No payload received');
+                return {success: false, message: 'No payload received'};
             }
         } catch (error) {
             console.error('Failed to send emails:', error);
+            return {success: false, message: 'Failed to send emails'};
         }
     }
 }
