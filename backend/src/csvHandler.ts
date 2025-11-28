@@ -29,4 +29,4 @@ export function getRecipientsList(): Recipient[] {
     return recipientsList;
 }
 
-// getRecipientsList();
+getRecipientsList();

@@ -32,7 +32,7 @@ class MailSender {
     // Helper function to personalize content
     const personalize = (content: string) =>
       content
-        .split('Dear Recruiter').join(`Dear ${receiverName}`)
+        .split('Hi Recruiter').join(`Dear ${receiverName}`)
         .split('your company').join(companyName);
 
     // Personalize provided content or use default
@@ -57,15 +57,15 @@ class MailSender {
     const senderEmail = process.env.GMAIL_USER!;
     const resumeFilePath = process.env.RESUME_FILE_PATH;
     const receiverName = fullName;
-    const { personalizedText, personalizedHtml } = this.getPersonalizedData(emailContent, receiverName, companyName, senderName);
+    // const { personalizedText, personalizedHtml } = this.getPersonalizedData(emailContent, receiverName, companyName, senderName);
     // If No message is there, no need to send mail.
-    if (personalizedText.length === 0 && personalizedHtml.length === 0) return {success: false, message: 'No message to send'};
+    if (emailContent.text?.length === 0 && emailContent.html?.length === 0) return {success: false, message: 'No message to send'};
     const mailOptions = {
       from: `"${senderName}" <${senderEmail}>`,
       to: email,
       subject: emailContent.subject,
-      text: personalizedText,
-      html: personalizedHtml,
+      text: emailContent.text,
+      html: emailContent.html,
       attachments: [
         {
           fileName: senderName + "_Resume",
@@ -109,17 +109,17 @@ class MailSender {
       const receiverName = recipientEmails.names[i] || 'Recruiter';
       const companyName = recipientEmails.companies[i] || 'your company';
 
-      const { personalizedText, personalizedHtml } = this.getPersonalizedData(emailContent, receiverName, companyName, senderName);
+      // const { personalizedText, personalizedHtml } = this.getPersonalizedData(emailContent, receiverName, companyName, senderName);
 
       // If No message is there, no need to send mail.
-      if (personalizedText.length === 0 && personalizedHtml.length === 0) return {success: false, message: 'No message to send'};
+      if (emailContent.text?.length === 0 && emailContent.html?.length === 0) return {success: false, message: 'No message to send'};
 
       const mailOptions = {
         from: `"${senderName}" <${senderEmail}>`,
         to: receiver,
         subject: emailContent.subject,
-        text: personalizedText,
-        html: personalizedHtml,
+        text: emailContent.text,
+        html: emailContent.html,
         attachments: [
           {
             fileName: senderName + "_Resume",

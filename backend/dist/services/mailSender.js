@@ -39,7 +39,7 @@ class MailSender {
     getPersonalizedData(emailContent, receiverName, companyName, senderName) {
         // Helper function to personalize content
         const personalize = (content) => content
-            .split('Dear Recruiter').join(`Dear ${receiverName}`)
+            .split('Hi Recruiter').join(`Dear ${receiverName}`)
             .split('your company').join(companyName);
         // Personalize provided content or use default
         const personalizedText = emailContent.text ? personalize(emailContent.text) : '';
@@ -48,6 +48,7 @@ class MailSender {
     }
     sendOneEmail(email, fullName, companyName, emailContent) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _a, _b;
             console.log("Sending email to recruiter...");
             // Validate inputs
             if (!email || !fullName || !companyName) {
@@ -62,16 +63,16 @@ class MailSender {
             const senderEmail = process.env.GMAIL_USER;
             const resumeFilePath = process.env.RESUME_FILE_PATH;
             const receiverName = fullName;
-            const { personalizedText, personalizedHtml } = this.getPersonalizedData(emailContent, receiverName, companyName, senderName);
+            // const { personalizedText, personalizedHtml } = this.getPersonalizedData(emailContent, receiverName, companyName, senderName);
             // If No message is there, no need to send mail.
-            if (personalizedText.length === 0 && personalizedHtml.length === 0)
+            if (((_a = emailContent.text) === null || _a === void 0 ? void 0 : _a.length) === 0 && ((_b = emailContent.html) === null || _b === void 0 ? void 0 : _b.length) === 0)
                 return { success: false, message: 'No message to send' };
             const mailOptions = {
                 from: `"${senderName}" <${senderEmail}>`,
                 to: email,
                 subject: emailContent.subject,
-                text: personalizedText,
-                html: personalizedHtml,
+                text: emailContent.text,
+                html: emailContent.html,
                 attachments: [
                     {
                         fileName: senderName + "_Resume",
@@ -93,6 +94,7 @@ class MailSender {
     // Send emails to multiple recruiters
     sendEmails(recipientEmails, emailContent) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _a, _b;
             console.log("Sending emails to recruiters...");
             // Validate inputs
             if (!recipientEmails || recipientEmails.emails.length === 0) {
@@ -111,16 +113,16 @@ class MailSender {
                 const receiver = recipientEmails.emails[i];
                 const receiverName = recipientEmails.names[i] || 'Recruiter';
                 const companyName = recipientEmails.companies[i] || 'your company';
-                const { personalizedText, personalizedHtml } = this.getPersonalizedData(emailContent, receiverName, companyName, senderName);
+                // const { personalizedText, personalizedHtml } = this.getPersonalizedData(emailContent, receiverName, companyName, senderName);
                 // If No message is there, no need to send mail.
-                if (personalizedText.length === 0 && personalizedHtml.length === 0)
+                if (((_a = emailContent.text) === null || _a === void 0 ? void 0 : _a.length) === 0 && ((_b = emailContent.html) === null || _b === void 0 ? void 0 : _b.length) === 0)
                     return { success: false, message: 'No message to send' };
                 const mailOptions = {
                     from: `"${senderName}" <${senderEmail}>`,
                     to: receiver,
                     subject: emailContent.subject,
-                    text: personalizedText,
-                    html: personalizedHtml,
+                    text: emailContent.text,
+                    html: emailContent.html,
                     attachments: [
                         {
                             fileName: senderName + "_Resume",

@@ -1,0 +1,16 @@
+arr = {
+    "personal": {
+        "id": 1,
+        "user": "harcharan",
+        "password": "harcharan",
+        "email": "harcharan@gmail.com",
+        "name": "Harcharan"
+    }, 
+    "post" : {
+        "id": 1,
+        "title": "Post 1",
+        "body": "This is the body of post 1"
+    },
+
+    
+}

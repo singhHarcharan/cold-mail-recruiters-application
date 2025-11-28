@@ -1,4 +1,6 @@
 "use strict";
+// # Compile TypeScript
+// npx tsc
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -9,6 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// # Run the compiled JavaScript
+// node dist/index.js
 require("dotenv/config");
 const express = require('express');
 const cors = require('cors');
@@ -21,7 +25,7 @@ app.use(express.json());
 app.post('/sendEmail', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { fullName, email, companyName } = req.body;
     const response = yield helper_1.helper.main(fullName, email, companyName);
-    console.log("response before sending to frontend is", response);
+    console.log("response before sending to frontend is", response, "---");
     return res.send(response);
 }));
 app.listen(8000, () => {

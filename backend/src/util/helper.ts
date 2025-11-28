@@ -15,7 +15,7 @@ class Helper {
     async main(fullName: string, email: string, companyName: string) {
         try {
             const recruiters: Users = this.getBodydata();
-            const contentToSend : EmailContent = emailContent.getEmailContent();
+            const contentToSend : EmailContent = emailContent.getEmailContent(fullName, companyName);
 
             // If we got the payload from frontend, send email to that person
             if (fullName && email && companyName) {

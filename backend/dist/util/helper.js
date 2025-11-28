@@ -24,7 +24,7 @@ class Helper {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const recruiters = this.getBodydata();
-                const contentToSend = emailContent_1.emailContent.getEmailContent();
+                const contentToSend = emailContent_1.emailContent.getEmailContent(fullName, companyName);
                 // If we got the payload from frontend, send email to that person
                 if (fullName && email && companyName) {
                     const response = yield mailSender_1.mailSender.sendOneEmail(email, fullName, companyName, contentToSend);

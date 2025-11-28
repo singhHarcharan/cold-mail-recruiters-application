@@ -61,4 +61,4 @@ function getRecipientsList() {
     });
     return recipientsList;
 }
-// getRecipientsList();
+getRecipientsList();

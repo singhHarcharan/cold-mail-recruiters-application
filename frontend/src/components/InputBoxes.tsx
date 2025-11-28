@@ -18,20 +18,35 @@ export const InputBoxes: React.FC<InputBoxesProps> = ({ onClose }) => {
   // But reset the input fields
   function hitNotification(response: any) {
     console.log("Response from backend after sending mail is", response);
-    // If everythng is fine, reset the input fields and Don't close the modal
-    setShowNotification(true);
+    
+    // First, hide any existing notification
+    setShowNotification(false);
+    
+    // Set the success state based on response
+    setSuccess(response.success);
+    
+    // Set the appropriate message
+    const newMessage = response.success 
+      ? `Email sent successfully to ${email}`
+      : `Failed to send email to ${email}`;
+    
+    // Clear input fields on success
     if (response.success) {
-      // onClose();
-      // Give a success notification on right top
       setEmail("");
       setFullName("");
       setCompanyName("");
-      setMessage("Email sent successfully to " + email);
-    } 
-    else {
-      // Give a failure notification on right top
-      setMessage("Failed to send email to {" + email + " }");
     }
+    
+    // Use setTimeout to ensure the state updates are processed
+    setTimeout(() => {
+      setMessage(newMessage);
+      setShowNotification(true);
+      
+      // Auto-hide notification after 5 seconds
+      setTimeout(() => {
+        setShowNotification(false);
+      }, 5000);
+    }, 100);
   }
 
   async function sendEmail() {
@@ -51,7 +66,10 @@ export const InputBoxes: React.FC<InputBoxesProps> = ({ onClose }) => {
       });
       const data = await response.json();
       console.log("Response data from backend is", data);
+      console.log("Hitting Notification...");
+      console.log("Data getting send to notification is ", data);
       hitNotification(data);
+      console.log("Notification hit");
     } catch (error) {
       console.error('Error:', error);
     } finally {

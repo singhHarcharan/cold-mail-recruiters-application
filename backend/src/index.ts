@@ -1,3 +1,9 @@
+// # Compile TypeScript
+// npx tsc
+
+// # Run the compiled JavaScript
+// node dist/index.js
+
 import 'dotenv/config';
 const express = require('express');
 const cors = require('cors');
