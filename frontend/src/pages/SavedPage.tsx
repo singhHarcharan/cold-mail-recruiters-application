@@ -3,7 +3,6 @@ import { useSavedRecruiters } from '../context/SavedRecruitersContext';
 import RecruiterTable from '../components/RecruiterTable';
 import SearchBar from '../components/SearchBar';
 import Pagination from '../components/Pagination';
-import { Recruiter } from '../types';
 import { filterRecruiters } from '../utils/filtering';
 
 const SavedPage: React.FC = () => {

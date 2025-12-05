@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+import * as nodemailer from 'nodemailer';
 import { EmailContent, Users } from '../types';
 
 // Custom error for mail sending issues

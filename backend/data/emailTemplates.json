@@ -1,0 +1,11 @@
+[
+  {
+    "id": "tpl_default",
+    "subject": "test",
+    "html": "test",
+    "text": "test",
+    "isDefault": true,
+    "createdAt": "2025-12-05T07:45:29.777Z",
+    "updatedAt": "2025-12-05T07:54:04.490Z"
+  }
+]

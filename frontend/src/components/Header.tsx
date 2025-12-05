@@ -43,7 +43,10 @@ const Header: React.FC = () => {
             </div>
             <nav className="flex items-center space-x-4">
               <button
-                onClick={() => setOpenTemplateModal(true)}
+                onClick={() => {
+                  setOpenTemplateModal(true)
+                  console.log("Email Template clicked");
+                }}
                 className="email-template px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150 text-gray-600 hover:bg-gray-100 hover:text-gray-900"
               >
                 <div className="flex items-center">

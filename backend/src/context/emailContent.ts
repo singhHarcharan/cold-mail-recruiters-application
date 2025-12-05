@@ -1,3 +1,5 @@
+import EmailTemplateModel from "../models/emailTemplate";
+
 class EmailContent {
   getEmailContent(fullName: string, companyName: string) {
     const emailContent = {
@@ -18,6 +20,45 @@ class EmailContent {
       `
     };
     return emailContent;
+  }
+async getEmailContentDynamic() {
+    try {
+      const defaultTemplate = await EmailTemplateModel.getDefaultTemplate();
+      if (!defaultTemplate) {
+        throw new Error('No default template found');
+      }
+      return {
+        subject: defaultTemplate.subject,
+        html: defaultTemplate.html,
+        text: defaultTemplate.text
+      };
+    } catch (error) {
+      console.error('Error getting email content:', error);
+      throw error;
+    }
+  }
+
+  async saveEmailContentDynamic(data: { subject: string; html: string; text: string }) {
+    try {
+      const defaultTemplate = await EmailTemplateModel.getDefaultTemplate();
+      
+      if (defaultTemplate) {
+        // Update existing template
+        return await EmailTemplateModel.updateTemplate(defaultTemplate.id, {
+          ...data,
+          isDefault: true
+        });
+      } else {
+        // Create new default template
+        return await EmailTemplateModel.saveTemplate({
+          ...data,
+          isDefault: true
+        });
+      }
+    } catch (error) {
+      console.error('Error saving email content:', error);
+      throw error;
+    }
   }
 }
 

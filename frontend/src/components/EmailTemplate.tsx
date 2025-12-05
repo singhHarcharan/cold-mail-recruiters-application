@@ -1,15 +1,74 @@
-import { useState } from "react";
+// frontend/src/components/EmailTemplate.tsx
+import { useState, useCallback, useEffect } from "react";
+import axios from 'axios';
+import { fetchWithSuspense } from '../utils/suspense';
+
+// This function can be used to preload the template data
+const preloadTemplate = () => {
+  return fetchWithSuspense<{ subject: string; html: string }>(
+    'http://localhost:8000/api/email-template'
+  )();
+};
 
 interface EmailTemplateProps {
   onClose: () => void;
   onSave: (data: { subject: string; template: string }) => void;
   currentTemplate?: string;
   currentSubject?: string;
+  variables?: Record<string, string>;
 }
 
-function EmailTemplate({ onClose, onSave, currentTemplate, currentSubject }: EmailTemplateProps) {
-  const [subject, setSubject] = useState(currentSubject || '');
-  const [template, setTemplate] = useState(currentTemplate || '');
+function EmailTemplate({ 
+  onClose, 
+  onSave, 
+  currentTemplate = '', 
+  currentSubject = '',
+  variables = {} 
+}: EmailTemplateProps) {
+  const [subject, setSubject] = useState(currentSubject);
+  const [template, setTemplate] = useState(currentTemplate);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load template data if not provided
+  useEffect(() => {
+    const loadTemplate = async () => {
+      if (!currentTemplate || !currentSubject) {
+        try {
+          const data = await preloadTemplate();
+          if (!currentSubject) setSubject(data.subject || '');
+          if (!currentTemplate) setTemplate(data.html || '');
+        } catch (error) {
+          console.error('Error loading template:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      } else {
+        setIsLoading(false);
+      }
+    };
+
+    loadTemplate();
+  }, [currentTemplate, currentSubject]);
+
+  const handleSave = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      await axios.post('http://localhost:8000/api/email-template', {
+        subject,
+        html: template,
+        text: template.replace(/<[^>]*>/g, '') // Basic HTML to text conversion
+      });
+      
+      onSave?.({ subject, template });
+      onClose();
+    } catch (error) {
+      console.error('Error saving template:', error);
+      alert('Failed to save template. Please try again.');
+      throw error; // This will be caught by ErrorBoundary if needed
+    } finally {
+      setIsLoading(false);
+    }
+  }, [subject, template, onSave, onClose]);
 
   return (
     <div className="w-full max-w-4xl mx-auto p-6">
@@ -21,60 +80,47 @@ function EmailTemplate({ onClose, onSave, currentTemplate, currentSubject }: Ema
             className="text-gray-500 hover:text-gray-700"
           >
             Close
-          </button> 
+          </button>
         </div>
-
-        <div className="space-y-2">
-          <label htmlFor="template" className="block text-sm font-medium text-gray-700">
-            Email Template
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Subject
           </label>
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="subject" className="block text-sm font-medium text-gray-700">
-                Subject
-              </label>
-              <input
-                id="subject"
-                name="subject"
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Enter email subject..."
-              />
-            </div>
-
-            <div>
-              <label htmlFor="template" className="block text-sm font-medium text-gray-700">
-                Email Template
-              </label>
-              <textarea
-                id="template"
-                name="template"
-                value={template}
-                onChange={(e) => setTemplate(e.target.value)}
-                rows={8}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Type your email template here..."
-              />
-            </div>
-          </div>
+          <input
+            type="text"
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            className="w-full p-2 border rounded"
+            placeholder="Email subject"
+          />
         </div>
 
-        <div className="flex justify-end space-x-3">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Email Body (HTML)
+          </label>
+          <textarea
+            value={template}
+            onChange={(e) => setTemplate(e.target.value)}
+            className="w-full h-64 p-2 border rounded font-mono"
+            placeholder="<p>Your email content here...</p>"
+          />
+        </div>
+
+        <div className="flex justify-end space-x-2">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded hover:bg-gray-200"
           >
             Cancel
           </button>
           <button
-            onClick={() => {
-              onSave({ subject, template });
-              onClose();
-            }}
-            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700"
+            onClick={handleSave}
+            disabled={isLoading}
+            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 disabled:opacity-50"
           >
-            Save Template
+            {isLoading ? 'Saving...' : 'Save Template'}
           </button>
         </div>
       </div>

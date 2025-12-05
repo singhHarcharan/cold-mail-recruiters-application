@@ -9,6 +9,7 @@ interface ModalProps {
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
+  console.log("Modal opened");
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">

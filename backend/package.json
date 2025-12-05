@@ -17,7 +17,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
     "@types/node": "^22.15.17",
-    "@types/nodemailer": "^6.4.17",
+    "@types/nodemailer": "^6.4.21",
     "@types/react-router-dom": "^5.3.3",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",

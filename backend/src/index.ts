@@ -9,7 +9,7 @@ const express = require('express');
 const cors = require('cors');
 import { Request, Response } from 'express';
 import { helper } from './util/helper';
-
+import { emailContent } from './context/emailContent';
 const app = express();
 app.use(cors({
     origin: '*'  
@@ -21,6 +21,33 @@ app.post('/sendEmail', async (req: Request, res: Response) => {
     const response: {success: boolean, message: string} = await helper.main(fullName, email, companyName);
     console.log("response before sending to frontend is", response, "---");
     return res.send(response);
+});
+
+// Get email template
+app.get('/api/email-template', async (req: Request, res: Response) => {
+  try {
+    const template = await emailContent.getEmailContentDynamic();
+    res.json(template);
+  } catch (error) {
+    console.error('Error getting email template:', error);
+    res.status(500).json({ success: false, message: 'Failed to get email template' });
+  }
+});
+
+// Save email template
+app.post('/api/email-template', async (req: Request, res: Response) => {
+  try {
+    const { subject, html, text } = req.body;
+    if (!subject || !html || !text) {
+      return res.status(400).json({ success: false, message: 'Missing required fields' });
+    }
+    
+    await emailContent.saveEmailContentDynamic({ subject, html, text });
+    res.json({ success: true, message: 'Template saved successfully' });
+  } catch (error) {
+    console.error('Error saving email template:', error);
+    res.status(500).json({ success: false, message: 'Failed to save email template' });
+  }
 });
 
 app.listen(8000, () => {

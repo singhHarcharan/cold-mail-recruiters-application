@@ -5,7 +5,7 @@ import FilterSidebar from '../components/FilterSidebar';
 import SearchBar from '../components/SearchBar';
 import Pagination from '../components/Pagination';
 import { filterRecruiters } from '../utils/filtering';
-import { Recruiter, FilterOptions } from '../types';
+import { FilterOptions } from '../types';
 
 const SearchPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
