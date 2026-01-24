@@ -28,6 +28,13 @@ const corsOptions = frontendUrl
 app.use(cors(corsOptions));
 app.use(express.json());
 
+app.get('/testRoute', (req: Request, res: Response) => {
+  console.log("Hi There");
+  res.send({
+    message: "Hello World"
+  });
+});
+
 // Old endpoint (keep for backward compatibility)
 app.post('/sendEmail', (req: Request, res: Response, next: NextFunction) => {
   const { fullName, email, companyName } = req.body;
