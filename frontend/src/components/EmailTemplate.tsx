@@ -2,11 +2,13 @@
 import { useState, useCallback, useEffect } from "react";
 import axios from 'axios';
 import { fetchWithSuspense } from '../utils/suspense';
+import { API_ENDPOINTS } from '../config/api';
 
 // This function can be used to preload the template data
 const preloadTemplate = () => {
   return fetchWithSuspense<{ subject: string; html: string }>(
-    'http://localhost:8000/api/email-template'
+    // 'http://localhost:8000/api/email-template'
+    API_ENDPOINTS.EMAIL_TEMPLATE
   )();
 };
 
@@ -53,7 +55,8 @@ function EmailTemplate({
   const handleSave = useCallback(async () => {
     try {
       setIsLoading(true);
-      await axios.post('http://localhost:8000/api/email-template', {
+      // const response = await axios.post('http://localhost:8000/api/email-template', {
+      await axios.post(API_ENDPOINTS.EMAIL_TEMPLATE, {
         subject,
         html: template,
         text: template.replace(/<[^>]*>/g, '') // Basic HTML to text conversion

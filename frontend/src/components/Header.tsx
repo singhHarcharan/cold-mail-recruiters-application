@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { Users, BookmarkCheck, Mail, FileText } from 'lucide-react';
 import Modal from './Modal';
 import InputBoxes from './InputBoxes';
@@ -20,6 +20,7 @@ const Header: React.FC = () => {
     setCurrentTemplate(template);
   };
 
+  const navigate = useNavigate();
   return (
     <>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
@@ -37,8 +38,8 @@ const Header: React.FC = () => {
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <Users className="h-8 w-8 text-blue-600" />
+            <div className="flex items-center cursor-pointer" onClick={() => navigate('/')}>
+              <img src="/message.png" alt="Recruiter Hub Logo" className="h-8 w-8" />
               <h1 className="ml-2 text-xl font-semibold text-gray-900">Recruiter Hub</h1>
             </div>
             <nav className="flex items-center space-x-4">

@@ -11,9 +11,19 @@ import { Request, Response } from 'express';
 import { helper } from './util/helper';
 import { emailContent } from './context/emailContent';
 const app = express();
-app.use(cors({
-    origin: '*'  
-}));
+
+// CORS configuration - allow frontend URL from environment or default to all origins in development
+const frontendUrl = process.env.FRONTEND_URL;
+const corsOptions = frontendUrl 
+  ? { 
+      origin: frontendUrl.includes(',') 
+        ? frontendUrl.split(',').map(url => url.trim())
+        : frontendUrl.trim(),
+      credentials: true 
+    }
+  : { origin: true }; // Allow all origins in development
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.post('/sendEmail', async (req: Request, res: Response) => {
@@ -50,8 +60,10 @@ app.post('/api/email-template', async (req: Request, res: Response) => {
   }
 });
 
-app.listen(8000, () => {
-    console.log(`Backend server running on http://localhost:8000`);
+const PORT = process.env.PORT || 8000;
+
+app.listen(PORT, () => {
+    console.log(`Backend server running on port ${PORT}`);
 });
 
 
