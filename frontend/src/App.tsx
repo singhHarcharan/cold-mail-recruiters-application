@@ -1,4 +1,3 @@
-import Dashboard from "./InputBoxes/Dashboard"
 //import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { SavedRecruitersProvider } from './context/SavedRecruitersContext';
@@ -7,6 +6,7 @@ import Header from './components/Header';
 import SearchPage from './pages/SearchPage';
 import SavedPage from './pages/SavedPage';
 import Footer from './components/Footer';
+import { Analytics } from '@vercel/analytics/react';
 // Import InputBoxes is no longer needed since it's used as a modal
 
 function App() {
@@ -27,6 +27,7 @@ function App() {
             </main>
           </div>
           <Footer />
+          <Analytics />
         </SelectedRecruitersProvider>
       </SavedRecruitersProvider>
     </Router>
