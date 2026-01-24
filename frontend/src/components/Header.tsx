@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Users, BookmarkCheck, Mail, FileText, LogOut, User } from 'lucide-react';
+import { Users, BookmarkCheck, Mail, FileText, LogOut } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import Modal from './Modal';
 import InputBoxes from './InputBoxes';
@@ -12,8 +12,24 @@ const Header: React.FC = () => {
   const [currentTemplate, setCurrentTemplate] = useState('');
   const [currentSubject, setCurrentSubject] = useState('');
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const { currentUser, logout } = useAuth();
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowUserMenu(false);
+      }
+    }
+
+    // Bind the event listener
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
   const navigate = useNavigate();
 
   const handleEmailTemplateClose = () => {
@@ -32,6 +48,20 @@ const Header: React.FC = () => {
     } catch (error) {
       console.error('Error logging out:', error);
     }
+  };
+
+  const getUserInitials = () => {
+    if (currentUser?.displayName) {
+      const names = currentUser.displayName.split(' ');
+      if (names.length > 1) {
+        return `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
+      }
+      return names[0][0].toUpperCase();
+    }
+    if (currentUser?.email) {
+      return currentUser.email[0].toUpperCase();
+    }
+    return 'U';
   };
 
   const getUserDisplayName = () => {
@@ -116,22 +146,14 @@ const Header: React.FC = () => {
               </NavLink>
               
               {/* User Menu */}
-              <div className="relative">
+              <div className="relative" ref={menuRef}>
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
                   className="flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
                 >
-                  {currentUser?.photoURL ? (
-                    <img
-                      src={currentUser.photoURL}
-                      alt={getUserDisplayName()}
-                      className="h-8 w-8 rounded-full"
-                    />
-                  ) : (
-                    <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center">
-                      <User className="h-5 w-5 text-white" />
-                    </div>
-                  )}
+                  <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-medium">
+                    {getUserInitials()}
+                  </div>
                   <span className="hidden md:block">{getUserDisplayName()}</span>
                 </button>
 
