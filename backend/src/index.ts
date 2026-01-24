@@ -15,17 +15,24 @@ import { sendAuthenticatedEmail, sendClientSideEmail } from './controllers/email
 const app = express();
 
 // CORS configuration - allow frontend URL from environment or default to all origins in development
-const frontendUrl = process.env.FRONTEND_URL;
-const corsOptions = frontendUrl
-  ? {
-    origin: frontendUrl.includes(',')
-      ? frontendUrl.split(',').map(url => url.trim())
-      : frontendUrl.trim(),
-    credentials: true
-  }
-  : { origin: true }; // Allow all origins in development
+// const frontendUrl = process.env.FRONTEND_URL;
+// const corsOptions = frontendUrl
+//   ? {
+//     origin: frontendUrl.includes(',')
+//       ? frontendUrl.split(',').map(url => url.trim())
+//       : frontendUrl.trim(),
+//     credentials: true
+//   }
+//   : { origin: true }; // Allow all origins in development
 
-app.use(cors(corsOptions));
+// Replace the existing CORS configuration with this:
+app.use(cors({
+  origin: ['https://recruiter-hub-app.vercel.app', 'http://localhost:3000'],
+  credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+app.options('*', cors());
 app.use(express.json());
 
 app.get('/testRoute', (req: Request, res: Response) => {
