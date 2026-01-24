@@ -2,8 +2,6 @@
 
 A modern web application for managing and contacting recruiters efficiently. RecruiterHub helps you search, filter, and send personalized emails to recruiters, making your job search process more streamlined.
 
-![RecruiterHub Logo](/frontend/public/message.png)
-
 ## ✨ Features
 
 - **🔍 Search & Browse Recruiters**: Search through a database of recruiters with advanced filtering options
