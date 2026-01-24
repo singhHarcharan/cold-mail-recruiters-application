@@ -27,13 +27,11 @@ class Helper {
                 const contentToSend = emailContent_1.emailContent.getEmailContent(fullName, companyName);
                 // If we got the payload from frontend, send email to that person
                 if (fullName && email && companyName) {
-                    const response = yield mailSender_1.mailSender.sendOneEmail(email, fullName, companyName, contentToSend);
+                    const response = yield (0, mailSender_1.createMailSender)(email, fullName).sendOneEmail(email, fullName, companyName, contentToSend);
                     return response;
                 }
                 // else send email to all recruiters
                 else {
-                    // const response = await mailSender.sendEmails(recruiters, contentToSend);
-                    // return response;
                     throw new Error('No payload received');
                     return { success: false, message: 'No payload received' };
                 }

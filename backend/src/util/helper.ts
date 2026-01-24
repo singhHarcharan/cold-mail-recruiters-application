@@ -1,5 +1,5 @@
 import { Users, EmailContent } from "../types";
-import { mailSender } from "../services/mailSender";
+import { createMailSender } from "../services/mailSender";
 import { emailContent } from "../context/emailContent";
 
 class Helper {
@@ -19,14 +19,11 @@ class Helper {
 
             // If we got the payload from frontend, send email to that person
             if (fullName && email && companyName) {
-                const response = await mailSender.sendOneEmail(email, fullName, companyName, contentToSend);
+                const response = await createMailSender(email, fullName).sendOneEmail(email, fullName, companyName, contentToSend);
                 return response;
             } 
             // else send email to all recruiters
             else {
-                // const response = await mailSender.sendEmails(recruiters, contentToSend);
-                // return response;
-
                 throw new Error('No payload received');
                 return {success: false, message: 'No payload received'};
             }

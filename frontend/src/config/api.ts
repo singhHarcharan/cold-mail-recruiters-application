@@ -4,7 +4,7 @@ import { auth } from './firebase';
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 export const API_ENDPOINTS = {
-  SEND_EMAIL: `${API_BASE_URL}/sendEmail`,
+  SEND_EMAIL: `${API_BASE_URL}/api/send-client-email`,  // Updated to use the new endpoint
   EMAIL_TEMPLATE: `${API_BASE_URL}/api/email-template`,
 };
 
