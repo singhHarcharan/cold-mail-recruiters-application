@@ -24,8 +24,7 @@ function EmailTemplate({
   onClose, 
   onSave, 
   currentTemplate = '', 
-  currentSubject = '',
-  variables = {} 
+  currentSubject = ''
 }: EmailTemplateProps) {
   const [subject, setSubject] = useState(currentSubject);
   const [template, setTemplate] = useState(currentTemplate);
