@@ -22,6 +22,7 @@ const helper_1 = require("./util/helper");
 const emailContent_1 = require("./context/emailContent");
 const auth_1 = require("./middleware/auth");
 const emailController_1 = require("./controllers/emailController");
+const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 // CORS configuration - allow frontend URL from environment or default to all origins in development
 // const frontendUrl = process.env.FRONTEND_URL;
@@ -33,19 +34,33 @@ const app = (0, express_1.default)();
 //     credentials: true
 //   }
 //   : { origin: true }; // Allow all origins in development
-// Manual CORS configuration
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    // Handle preflight requests
-    if (req.method === 'OPTIONS') {
-        res.status(200).end();
-        return;
-    }
-    next();
-});
+// // Manual CORS configuration
+// app.use((req: Request, res: Response, next: NextFunction): void => {
+//     res.setHeader('Access-Control-Allow-Origin', '*');
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//     res.setHeader('Access-Control-Allow-Credentials', 'true');
+//     // Handle preflight requests
+//     if (req.method === 'OPTIONS') {
+//         res.status(200).end();
+//         return;
+//     }
+//     next();
+// });
+const allowedOrigins = ['https://recruiter-hub-app.vercel.app', 'http://localhost:5173'];
+app.use((0, cors_1.default)({
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin)
+            return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    },
+    credentials: true // if you are using cookies/sessions
+}));
 app.use(express_1.default.json());
 app.get('/testRoute', (req, res) => {
     console.log("Hi There");
@@ -85,6 +100,7 @@ app.post('/api/send-client-email', (req, res, next) => {
     (0, auth_1.authenticate)(req, res, next);
 }, (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        console.log("Sending client email...");
         yield (0, emailController_1.sendClientSideEmail)(req, res, next);
     }
     catch (error) {

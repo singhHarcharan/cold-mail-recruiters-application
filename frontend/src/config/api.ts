@@ -37,4 +37,46 @@ export const getAuthHeaders = async (): Promise<HeadersInit> => {
   return headers;
 };
 
+// Function to send email from the client side
+export const sendClientEmail = async (emailData: {
+  to: string;
+  fullName: string;
+  companyName: string;
+}): Promise<{ success: boolean; message: string; data?: any }> => {
+  try {
+    const token = await getAuthToken();
+    if (!token) {
+      throw new Error('User not authenticated');
+    }
+
+    const response = await fetch(API_ENDPOINTS.SEND_EMAIL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(emailData),
+      credentials: 'include', // Important for cookies if you're using them
+    });
+
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.message || 'Failed to send email');
+    }
+
+    return {
+      success: true,
+      message: data.message || 'Email sent successfully',
+      data: data.data
+    };
+  } catch (error) {
+    console.error('Error sending email:', error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : 'Failed to send email',
+    };
+  }
+};
+
 export default API_BASE_URL;

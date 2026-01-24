@@ -54,8 +54,11 @@ export const sendAuthenticatedEmail = async (req: Request, res: Response, next: 
 // New endpoint for client-side email sending
 export const sendClientSideEmail = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { to, fullName, companyName, from, displayName } = req.body;
+    // Extract fields from request body with proper type checking
+    const { email, fullName, companyName } = req.body;
     const user = req.user; // This comes from our auth middleware
+
+    console.log("Received data:", { email, fullName, companyName, sender: user?.email });
 
     if (!user?.email) {
       return res.status(401).json({ 
@@ -64,32 +67,40 @@ export const sendClientSideEmail = async (req: Request, res: Response, next: Nex
       });
     }
 
-    if (!to || !fullName || !companyName || !from || !displayName) {
+    // Validate required fields
+    if (!email || !fullName || !companyName) {
       return res.status(400).json({ 
         success: false, 
-        message: 'Missing required fields' 
+        message: 'Missing required fields',
+        missing: {
+          email: !email,
+          fullName: !fullName,
+          companyName: !companyName
+        }
       });
     }
 
     try {
       // Create a mail sender instance with the authenticated user's email and name
-      const mailSender = createMailSender(from, displayName);
+      const mailSender = createMailSender(user.email, user.displayName || user.email.split('@')[0]);
       
       // Get the email template
       const template = await emailContent.getEmailContentDynamic();
       
       // Send the email
-      const result = await mailSender.sendOneEmail(to, fullName, companyName, template);
+      const result = await mailSender.sendOneEmail(email, fullName, companyName, template);
 
       // Log the email sending activity
-      console.log(`User ${user.email} sent an email to ${to}`);
+      console.log(`User ${user.email} sent an email to ${email}`);
 
       return res.status(200).json({
         success: result.success,
-        message: result.message,
+        message: result.message || 'Email sent successfully',
         data: {
-          to,
+          to: email,
           from: user.email,
+          fullName,
+          companyName,
           timestamp: new Date().toISOString(),
           messageId: result.messageId
         }

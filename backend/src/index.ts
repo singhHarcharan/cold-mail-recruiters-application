@@ -10,6 +10,7 @@ import { helper } from './util/helper';
 import { emailContent } from './context/emailContent';
 import { authenticate } from './middleware/auth';
 import { sendAuthenticatedEmail, sendClientSideEmail } from './controllers/emailController';
+import cors from 'cors';
 
 const app = express();
 
@@ -24,21 +25,36 @@ const app = express();
 //   }
 //   : { origin: true }; // Allow all origins in development
 
-// Manual CORS configuration
-app.use((req: Request, res: Response, next: NextFunction): void => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
+// // Manual CORS configuration
+// app.use((req: Request, res: Response, next: NextFunction): void => {
+//     res.setHeader('Access-Control-Allow-Origin', '*');
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//     res.setHeader('Access-Control-Allow-Credentials', 'true');
     
-    // Handle preflight requests
-    if (req.method === 'OPTIONS') {
-        res.status(200).end();
-        return;
-    }
+//     // Handle preflight requests
+//     if (req.method === 'OPTIONS') {
+//         res.status(200).end();
+//         return;
+//     }
     
-    next();
-});
+//     next();
+// });
+
+const allowedOrigins = ['https://recruiter-hub-app.vercel.app', 'http://localhost:5173']; 
+
+app.use(cors({
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    },
+    credentials: true // if you are using cookies/sessions
+}));
 app.use(express.json());
 
 app.get('/testRoute', (req: Request, res: Response) => {
@@ -84,6 +100,7 @@ app.post('/api/send-client-email',
   },
   async (req: Request, res: Response, next: NextFunction) => {
     try {
+      console.log("Sending client email...");
       await sendClientSideEmail(req, res, next);
     } catch (error) {
       console.error('Error sending client email:', error);
