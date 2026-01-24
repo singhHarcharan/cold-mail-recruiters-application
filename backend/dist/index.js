@@ -18,7 +18,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // node dist/index.js
 require("dotenv/config");
 const express_1 = __importDefault(require("express"));
-const cors_1 = __importDefault(require("cors"));
 const helper_1 = require("./util/helper");
 const emailContent_1 = require("./context/emailContent");
 const auth_1 = require("./middleware/auth");
@@ -34,17 +33,19 @@ const app = (0, express_1.default)();
 //     credentials: true
 //   }
 //   : { origin: true }; // Allow all origins in development
-const corsOpts = {
-    origin: '*',
-    methods: [
-        'GET',
-        'POST',
-    ],
-    allowedHeaders: [
-        'Content-Type',
-    ],
-};
-app.use((0, cors_1.default)(corsOpts));
+// Manual CORS configuration
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    // Handle preflight requests
+    if (req.method === 'OPTIONS') {
+        res.status(200).end();
+        return;
+    }
+    next();
+});
 app.use(express_1.default.json());
 app.get('/testRoute', (req, res) => {
     console.log("Hi There");

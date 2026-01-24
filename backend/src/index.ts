@@ -6,7 +6,6 @@
 
 import 'dotenv/config';
 import express, { Request, Response, NextFunction } from 'express';
-import cors from 'cors';
 import { helper } from './util/helper';
 import { emailContent } from './context/emailContent';
 import { authenticate } from './middleware/auth';
@@ -25,21 +24,21 @@ const app = express();
 //   }
 //   : { origin: true }; // Allow all origins in development
 
-const corsOpts = {
-  origin: '*',
-
-  methods: [
-    'GET',
-    'POST',
-  ],
-
-  allowedHeaders: [
-    'Content-Type',
-    'Authorization',
-  ],
-};
-
-app.use(cors(corsOpts));
+// Manual CORS configuration
+app.use((req: Request, res: Response, next: NextFunction): void => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    
+    // Handle preflight requests
+    if (req.method === 'OPTIONS') {
+        res.status(200).end();
+        return;
+    }
+    
+    next();
+});
 app.use(express.json());
 
 app.get('/testRoute', (req: Request, res: Response) => {
