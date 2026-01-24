@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Notification } from "./Notification";
-import { API_ENDPOINTS } from "../config/api";  
+import { API_ENDPOINTS, getAuthHeaders } from "../config/api";  
 interface InputBoxesProps {
   onClose: () => void;
 }
@@ -60,10 +60,10 @@ export const InputBoxes: React.FC<InputBoxesProps> = ({ onClose }) => {
     // console.log("Payload before sending to backend is ", payload);
     try {
       setIsLoading(true);
-      // const response = await fetch('http://localhost:8000/sendEmail', {
+      const headers = await getAuthHeaders();
       const response = await fetch(API_ENDPOINTS.SEND_EMAIL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify(payload),  
       });
       const data = await response.json();

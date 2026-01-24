@@ -1,16 +1,7 @@
 // frontend/src/components/EmailTemplate.tsx
 import { useState, useCallback, useEffect } from "react";
 import axios from 'axios';
-import { fetchWithSuspense } from '../utils/suspense';
-import { API_ENDPOINTS } from '../config/api';
-
-// This function can be used to preload the template data
-const preloadTemplate = () => {
-  return fetchWithSuspense<{ subject: string; html: string }>(
-    // 'http://localhost:8000/api/email-template'
-    API_ENDPOINTS.EMAIL_TEMPLATE
-  )();
-};
+import { API_ENDPOINTS, getAuthToken } from '../config/api';
 
 interface EmailTemplateProps {
   onClose: () => void;
@@ -35,7 +26,16 @@ function EmailTemplate({
     const loadTemplate = async () => {
       if (!currentTemplate || !currentSubject) {
         try {
-          const data = await preloadTemplate();
+          const token = await getAuthToken();
+          const headers: HeadersInit = {
+            'Content-Type': 'application/json',
+          };
+          if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+          }
+          
+          const response = await fetch(API_ENDPOINTS.EMAIL_TEMPLATE, { headers });
+          const data = await response.json();
           if (!currentSubject) setSubject(data.subject || '');
           if (!currentTemplate) setTemplate(data.html || '');
         } catch (error) {
@@ -54,12 +54,19 @@ function EmailTemplate({
   const handleSave = useCallback(async () => {
     try {
       setIsLoading(true);
-      // const response = await axios.post('http://localhost:8000/api/email-template', {
+      const token = await getAuthToken();
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      
       await axios.post(API_ENDPOINTS.EMAIL_TEMPLATE, {
         subject,
         html: template,
         text: template.replace(/<[^>]*>/g, '') // Basic HTML to text conversion
-      });
+      }, { headers });
       
       onSave?.({ subject, template });
       onClose();
