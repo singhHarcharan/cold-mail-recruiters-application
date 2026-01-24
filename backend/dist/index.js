@@ -25,17 +25,33 @@ const auth_1 = require("./middleware/auth");
 const emailController_1 = require("./controllers/emailController");
 const app = (0, express_1.default)();
 // CORS configuration - allow frontend URL from environment or default to all origins in development
-const frontendUrl = process.env.FRONTEND_URL;
-const corsOptions = frontendUrl
-    ? {
-        origin: frontendUrl.includes(',')
-            ? frontendUrl.split(',').map(url => url.trim())
-            : frontendUrl.trim(),
-        credentials: true
-    }
-    : { origin: true }; // Allow all origins in development
-app.use((0, cors_1.default)(corsOptions));
+// const frontendUrl = process.env.FRONTEND_URL;
+// const corsOptions = frontendUrl
+//   ? {
+//     origin: frontendUrl.includes(',')
+//       ? frontendUrl.split(',').map(url => url.trim())
+//       : frontendUrl.trim(),
+//     credentials: true
+//   }
+//   : { origin: true }; // Allow all origins in development
+const corsOpts = {
+    origin: '*',
+    methods: [
+        'GET',
+        'POST',
+    ],
+    allowedHeaders: [
+        'Content-Type',
+    ],
+};
+app.use((0, cors_1.default)(corsOpts));
 app.use(express_1.default.json());
+app.get('/testRoute', (req, res) => {
+    console.log("Hi There");
+    res.send({
+        message: "Hello World"
+    });
+});
 // Old endpoint (keep for backward compatibility)
 app.post('/sendEmail', (req, res, next) => {
     const { fullName, email, companyName } = req.body;

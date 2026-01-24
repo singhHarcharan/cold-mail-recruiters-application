@@ -25,14 +25,20 @@ const app = express();
 //   }
 //   : { origin: true }; // Allow all origins in development
 
-// Replace the existing CORS configuration with this:
-app.use(cors({
-  origin: ['https://recruiter-hub-app.vercel.app', 'http://localhost:3000'],
-  credentials: true,
-  methods: ['GET', 'POST', 'OPTIONS', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-app.options('*', cors());
+const corsOpts = {
+  origin: '*',
+
+  methods: [
+    'GET',
+    'POST',
+  ],
+
+  allowedHeaders: [
+    'Content-Type',
+  ],
+};
+
+app.use(cors(corsOpts));
 app.use(express.json());
 
 app.get('/testRoute', (req: Request, res: Response) => {
